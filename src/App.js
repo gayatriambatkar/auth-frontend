@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import Navbar from "../src/components/Navbar";
+import Registration from "../src/components/Registration";
+import Login from "../src/components/Login";
+import Footer from "../src/components/footer"; // Ensure correct casing
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-between">
+      <Navbar />
+      
+      <div className="flex-grow">
+        <Routes>
+          <Route path="/register" element={<Registration />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<h2 className="mt-10 text-xl text-center">Welcome to My App</h2>} />
+        </Routes>
+      </div>
+
+      <Footer />
     </div>
   );
 }
