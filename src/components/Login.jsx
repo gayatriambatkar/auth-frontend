@@ -1,19 +1,30 @@
 import { useState } from "react";
+import axios from "axios"; // ✅ Import axios for API requests
 
 const Login = () => {
   const [isToggled, setIsToggled] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "", clientId: "" });
   const [errors, setErrors] = useState({});
+  const [message, setMessage] = useState("");
 
-  const handleToggle = () => setIsToggled(!isToggled);
+  // ✅ Toggle between Admin and Client & Reset everything
+  const handleToggle = () => {
+    setIsToggled(!isToggled);
+
+    // ✅ Reset form fields, errors, and messages
+    setFormData({ email: "", password: "", clientId: "" });
+    setErrors({});
+    setMessage("");
+  };
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const validateForm = () => {
     let newErrors = {};
-    
+
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(formData.email)) {
@@ -34,10 +45,26 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted successfully", formData);
+    if (!validateForm()) return;
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/users/login", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      console.log("Login Successful:", response.data);
+      setMessage("✅ Login Successful!");
+
+      // Store user info in local storage
+      localStorage.setItem("user", JSON.stringify(response.data));
+
+      // Redirect user (if needed)
+      // window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Login failed:", error);
+      setMessage("❌ Invalid credentials, please try again.");
     }
   };
 
@@ -45,14 +72,18 @@ const Login = () => {
     <div className="w-full h-screen flex items-center justify-center flex-col bg-gradient-to-r from-purple-300 to-pink-300">
       <div className="mt-10 mx-auto w-full max-w-sm bg-white/50 p-8 rounded-2xl shadow-lg">
         <h5 className="text-center text-2xl font-bold text-purple-800">Welcome</h5>
-        <h6 className="text-center text-lg text-gray-700">To Support team</h6>
+        <h6 className="text-center text-lg text-gray-700">To Support Team</h6>
+
+        {message && <p className="text-center text-lg font-semibold text-blue-800">{message}</p>}
+
+        {/* ✅ Toggle Between Admin & Client */}
         <div className="mt-4 flex justify-center">
           <div className="flex items-center rounded-md shadow-md border border-blue-200">
             <span
               className={`px-6 py-2 cursor-pointer text-sm font-semibold rounded-l-md ${
                 !isToggled ? "bg-blue-400 text-white" : "bg-white text-gray-700"
               }`}
-              onClick={handleToggle}
+              onClick={handleToggle} // ✅ Reset when toggled
             >
               Admin
             </span>
@@ -60,7 +91,7 @@ const Login = () => {
               className={`px-6 py-2 cursor-pointer text-sm font-semibold rounded-r-md ${
                 isToggled ? "bg-blue-400 text-white" : "bg-white text-gray-700"
               }`}
-              onClick={handleToggle}
+              onClick={handleToggle} // ✅ Reset when toggled
             >
               Client
             </span>
@@ -74,6 +105,7 @@ const Login = () => {
               <input
                 type="text"
                 name="clientId"
+                value={formData.clientId} // ✅ Controlled Input
                 placeholder="Client ID"
                 onChange={handleInputChange}
                 className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -87,6 +119,7 @@ const Login = () => {
             <input
               type="email"
               name="email"
+              value={formData.email} // ✅ Controlled Input
               placeholder="Email"
               onChange={handleInputChange}
               className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -100,6 +133,7 @@ const Login = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
+                value={formData.password} // ✅ Controlled Input
                 placeholder="Password"
                 onChange={handleInputChange}
                 className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
@@ -115,7 +149,7 @@ const Login = () => {
             {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
           </div>
 
-          {!isToggled && (
+          {isToggled && (
             <div className="text-right text-blue-600 text-sm cursor-pointer hover:underline">
               Forgot Password?
             </div>

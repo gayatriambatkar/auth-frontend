@@ -1,15 +1,22 @@
 import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify"; // ✅ Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // ✅ Import Toast styles
+
 import Navbar from "../src/components/Navbar";
 import Registration from "../src/components/Registration";
 import Login from "../src/components/Login";
-import Footer from "../src/components/footer"; 
+import Footer from "../src/components/Footer"; 
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-between">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <Navbar />
-      
-      <div className="flex-grow">
+
+      {/* ✅ ToastContainer for notifications */}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+
+      {/* ✅ Main content area */}
+      <div className="flex-grow flex justify-center items-center">
         <Routes>
           <Route path="/register" element={<Registration />} />
           <Route path="/login" element={<Login />} />
