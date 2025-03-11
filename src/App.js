@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "../src/components/Navbar";
 import Registration from "../src/components/Registration";
 import Login from "../src/components/Login";
-import Footer from "../src/components/footer"; // Ensure correct casing
+import Footer from "../src/components/footer"; 
 
 function App() {
   return (
