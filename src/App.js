@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css"; // ✅ Import Toast styles
 import Navbar from "../src/components/Navbar";
 import Registration from "../src/components/Registration";
 import Login from "../src/components/Login";
-import Footer from "../src/components/Footer"; 
+import Footer from "../src/components/footer"; 
 
 function App() {
   return (
